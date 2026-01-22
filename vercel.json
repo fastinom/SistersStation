@@ -1,22 +1,18 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "public/index.php",
-      "use": "@vercel/php"
-    }
-  ],
+  "buildCommand": "npm ci && npm run build",
+  "outputDirectory": "public",
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/public/index.php"
+      "dest": "/index.php"
     }
   ],
   "env": {
     "APP_NAME": "Sisters Station",
     "APP_ENV": "production",
     "APP_DEBUG": "false",
-    "APP_URL": "https:sisters_station.vercel.app",
+    "APP_URL": "https://sisters-station.vercel.app",
     "APP_KEY": "base64:Gv4EEkfNKVxiZVoe4pZWxS/8zcL5B17gcokHvqED3lM="
   }
 }
