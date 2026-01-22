@@ -7,7 +7,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "postinstall": "chmod +x node_modules/.bin/vite"
+        "postinstall": "chmod +x node_modules/.bin/vite",
+        "vercel-build": "chmod +x ./node_modules/.bin/vite && vite build"
     },
     "devDependencies": {
         "laravel-vite-plugin": "^1.0.0",
