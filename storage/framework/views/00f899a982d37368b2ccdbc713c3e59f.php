@@ -35,12 +35,12 @@
                         <div class="mb-4">
                             <label class="form-label fw-bold">Categories</label>
                             <div class="category-filters" style="max-height: 200px; overflow-y: auto;">
-                                <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" type="radio" name="category" 
-                                               value="<?php echo e($category->slug); ?>" id="category-<?php echo e($category->id); ?>"
-                                               <?php echo e(request('category') == $category->slug ? 'checked' : ''); ?>>
-                                        <label class="form-check-label" for="category-<?php echo e($category->id); ?>">
+                                               value="<?php echo e($category->name); ?>" id="category-<?php echo e($index); ?>"
+                                               <?php echo e(request('category') == $category->name ? 'checked' : ''); ?>>
+                                        <label class="form-check-label" for="category-<?php echo e($index); ?>">
                                             <?php echo e($category->name); ?>
 
                                             <small class="text-muted">(<?php echo e($category->products_count); ?>)</small>
@@ -69,16 +69,16 @@
                         </div>
 
                         <!-- Brands -->
-                        <?php if($brands->count() > 0): ?>
+                        <?php if(count($brands) > 0): ?>
                             <div class="mb-4">
                                 <label class="form-label fw-bold">Brands</label>
                                 <div class="brand-filters" style="max-height: 150px; overflow-y: auto;">
-                                    <?php $__currentLoopData = $brands; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $brand): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php $__currentLoopData = $brands; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $brand): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="form-check mb-2">
                                             <input class="form-check-input" type="radio" name="brand" 
-                                                   value="<?php echo e($brand); ?>" id="brand-<?php echo e(loop->index); ?>"
+                                                   value="<?php echo e($brand); ?>" id="brand-<?php echo e($index); ?>"
                                                    <?php echo e(request('brand') == $brand ? 'checked' : ''); ?>>
-                                            <label class="form-check-label" for="brand-<?php echo e(loop->index); ?>">
+                                            <label class="form-check-label" for="brand-<?php echo e($index); ?>">
                                                 <?php echo e($brand); ?>
 
                                             </label>
@@ -160,14 +160,14 @@
                                 <div class="card product-card h-100 border-0 shadow-sm">
                                     <div class="product-image-container position-relative">
                                         <a href="<?php echo e(route('products.show', $product->slug)); ?>">
-                                            <img src="<?php echo e($product->getPrimaryImageUrl()); ?>" 
+                                            <img src="<?php echo e($product->primary_image_url); ?>" 
                                                  alt="<?php echo e($product->name); ?>" 
                                                  class="card-img-top product-image"
                                                  style="height: 250px; object-fit: cover;">
                                         </a>
-                                        <?php if($product->getDiscountPercentage()): ?>
+                                        <?php if($product->discount_percentage): ?>
                                             <span class="position-absolute top-0 start-0 badge bg-danger m-2">
-                                                -<?php echo e($product->getDiscountPercentage()); ?>%
+                                                -<?php echo e($product->discount_percentage); ?>%
                                             </span>
                                         <?php endif; ?>
                                         <?php if($product->is_featured): ?>
@@ -199,6 +199,10 @@
                                         <div class="mb-2">
                                             <small class="text-muted"><?php echo e($product->seller->store_name); ?></small>
                                         </div>
+                                        <p class="card-text small text-muted mb-2">
+                                            <?php echo e(Str::limit($product->description, 100)); ?>
+
+                                        </p>
                                         <div class="d-flex align-items-center justify-content-between mb-2">
                                             <div>
                                                 <?php if($product->compare_price && $product->compare_price > $product->price): ?>
@@ -209,9 +213,9 @@
                                                 <?php endif; ?>
                                             </div>
                                             <div class="text-warning small">
-                                                <i class="bi bi-star-fill"></i> <?php echo e(number_format($product->getAverageRating(), 1)); ?>
+                                                <i class="bi bi-star-fill"></i> <?php echo e(number_format($product->average_rating, 1)); ?>
 
-                                                <small class="text-muted">(<?php echo e($product->getReviewCount()); ?>)</small>
+                                                <small class="text-muted">(<?php echo e($product->review_count); ?>)</small>
                                             </div>
                                         </div>
                                         <button class="btn btn-primary btn-sm w-100 add-to-cart" 

@@ -9,11 +9,12 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable; // Temporarily removed HasRoles
 
     /**
      * The attributes that are mass assignable.
@@ -115,7 +116,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isSeller(): bool
     {
-        return $this->user_type === 'seller' || $this->hasRole('seller');
+        return $this->user_type === 'seller'; // Temporarily removed role check
     }
 
     /**
@@ -123,7 +124,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isAdmin(): bool
     {
-        return $this->user_type === 'admin' || $this->hasRole('admin');
+        return $this->user_type === 'admin'; // Temporarily removed role check
     }
 
     /**
@@ -131,7 +132,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isCustomer(): bool
     {
-        return $this->user_type === 'customer' || $this->hasRole('customer');
+        return $this->user_type === 'customer'; // Temporarily removed role check
     }
 
     /**

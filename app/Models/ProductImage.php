@@ -29,7 +29,29 @@ class ProductImage extends Model
 
     public function getImageUrlAttribute()
     {
-        return asset('storage/products/' . $this->image_path);
+        $path = $this->image_path;
+
+        if (!$path) {
+            return asset('images/placeholder-product.jpg');
+        }
+
+        if (preg_match('#^https?://#i', $path)) {
+            return $path;
+        }
+
+        if (str_starts_with($path, '/')) {
+            return $path;
+        }
+
+        if (str_starts_with($path, 'products/')) {
+            return asset('storage/' . $path);
+        }
+
+        if (str_starts_with($path, 'images/')) {
+            return asset($path);
+        }
+
+        return asset($path);
     }
 
     public function scopePrimary($query)

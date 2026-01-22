@@ -19,6 +19,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Create admin user first
+        $this->call(AdminUserSeeder::class);
+
         // Create categories first
         $this->createCategories();
 
@@ -33,110 +36,76 @@ class DatabaseSeeder extends Seeder
     {
         $categories = [
             [
-                'name' => 'Baby Clothing',
-                'slug' => 'baby-clothing',
-                'description' => 'Adorable and comfortable clothing for babies',
-                'icon' => 'bi bi-balloon-heart',
+                'name' => 'Tommee Tippee',
+                'slug' => 'tommee-tippee',
+                'description' => 'Tommee Tippee products',
                 'sort_order' => 1,
                 'is_featured' => true,
             ],
             [
-                'name' => 'Onesies & Bodysuits',
-                'slug' => 'onesies-bodysuits',
-                'description' => 'Comfortable onesies and bodysuits for everyday wear',
-                'icon' => 'bi bi-shirt',
-                'parent_id' => null, // Will be set after parent is created
+                'name' => 'Baby Clothing',
+                'slug' => 'baby-clothing',
+                'description' => 'Adorable and comfortable clothing for babies',
+                'icon' => 'bi bi-balloon-heart',
                 'sort_order' => 2,
+                'is_featured' => true,
             ],
             [
-                'name' => 'Sleepwear',
-                'slug' => 'sleepwear',
-                'description' => 'Cozy sleepwear for peaceful nights',
-                'icon' => 'bi bi-moon-stars',
-                'parent_id' => null, // Will be set after parent is created
+                'name' => 'Bath and Skin Care',
+                'slug' => 'bath-and-skin-care',
+                'description' => 'Bath and skin care essentials',
                 'sort_order' => 3,
+                'is_featured' => true,
             ],
             [
-                'name' => 'Dresses & Outfits',
-                'slug' => 'dresses-outfits',
-                'description' => 'Beautiful dresses and complete outfits for special occasions',
-                'icon' => 'bi bi-star',
-                'parent_id' => null, // Will be set after parent is created
+                'name' => 'Bedding',
+                'slug' => 'bedding',
+                'description' => 'Bedding and sleep essentials',
                 'sort_order' => 4,
+                'is_featured' => true,
             ],
             [
-                'name' => 'Shoes & Socks',
-                'slug' => 'shoes-socks',
-                'description' => 'Cute shoes and cozy socks for tiny feet',
-                'icon' => 'bi bi-boot',
-                'parent_id' => null, // Will be set after parent is created
+                'name' => 'Crafted with Love',
+                'slug' => 'crafted-with-love',
+                'description' => 'Handmade and crafted items',
                 'sort_order' => 5,
+                'is_featured' => true,
             ],
             [
-                'name' => 'Accessories',
-                'slug' => 'accessories',
-                'description' => 'Cute accessories to complete the look',
-                'icon' => 'bi bi-gift',
-                'parent_id' => null, // Will be set after parent is created
+                'name' => 'Mommy\'s Corner',
+                'slug' => 'mommys-corner',
+                'description' => 'Products for moms',
                 'sort_order' => 6,
+                'is_featured' => true,
             ],
             [
-                'name' => 'Toys & Play',
-                'slug' => 'toys-play',
-                'description' => 'Educational and fun toys for development',
-                'icon' => 'bi bi-controller',
+                'name' => 'Nursery Accessories',
+                'slug' => 'nursery-accessories',
+                'description' => 'Nursery accessories and decor',
                 'sort_order' => 7,
                 'is_featured' => true,
             ],
             [
-                'name' => 'Nursery',
-                'slug' => 'nursery',
-                'description' => 'Essentials for a comfortable nursery',
-                'icon' => 'bi bi-house-heart',
+                'name' => 'Baby Toys',
+                'slug' => 'baby-toys',
+                'description' => 'Toys for babies',
                 'sort_order' => 8,
                 'is_featured' => true,
             ],
-            [
-                'name' => 'Feeding',
-                'slug' => 'feeding',
-                'description' => 'Everything you need for feeding time',
-                'icon' => 'bi bi-cup-straw',
-                'sort_order' => 9,
-            ],
-            [
-                'name' => 'Bath Time',
-                'slug' => 'bath-time',
-                'description' => 'Make bath time fun and safe',
-                'icon' => 'bi bi-droplet',
-                'sort_order' => 10,
-            ],
         ];
 
-        $createdCategories = [];
-
         foreach ($categories as $categoryData) {
-            $category = Category::firstOrCreate(
+            $categoryData = array_merge([
+                'is_active' => true,
+                'parent_id' => null,
+                'icon' => $categoryData['icon'] ?? null,
+                'description' => $categoryData['description'] ?? null,
+            ], $categoryData);
+
+            Category::updateOrCreate(
                 ['slug' => $categoryData['slug']],
                 $categoryData
             );
-            $createdCategories[$categoryData['slug']] = $category;
-        }
-
-        // Set parent relationships - subcategories under Baby Clothing
-        $parentMappings = [
-            'onesies-bodysuits' => 'baby-clothing',
-            'sleepwear' => 'baby-clothing',
-            'dresses-outfits' => 'baby-clothing',
-            'shoes-socks' => 'baby-clothing',
-            'accessories' => 'baby-clothing',
-        ];
-
-        foreach ($parentMappings as $childSlug => $parentSlug) {
-            if (isset($createdCategories[$childSlug]) && isset($createdCategories[$parentSlug])) {
-                $createdCategories[$childSlug]->update([
-                    'parent_id' => $createdCategories[$parentSlug]->id
-                ]);
-            }
         }
     }
 
@@ -198,88 +167,92 @@ class DatabaseSeeder extends Seeder
 
         $products = [
             [
-                'name' => 'Organic Cotton Onesie - Pink',
-                'description' => 'Soft and comfortable organic cotton onesie perfect for your little one. Made from 100% certified organic cotton, this onesie is gentle on sensitive skin and free from harmful chemicals.',
-                'short_description' => 'Soft organic cotton onesie in pink',
+                'name' => 'Tommee Tippee Baby Bottle',
+                'description' => 'Tommee Tippee baby bottle designed for comfortable feeding.',
+                'short_description' => 'Tommee Tippee bottle',
                 'price' => 12.99,
                 'compare_price' => 18.99,
-                'sku' => 'OC-001-PINK',
-                'brand' => 'Baby Bliss',
+                'sku' => 'TT-BOTTLE-001',
+                'brand' => 'Tommee Tippee',
                 'weight' => 0.2,
                 'quantity' => 50,
-                'category_slug' => 'onesies-bodysuits',
-                'tags' => ['organic', 'cotton', 'onesie', 'pink', 'newborn'],
+                'category_slug' => 'tommee-tippee',
+                'tags' => ['bottle', 'feeding', 'tommee tippee'],
             ],
             [
-                'name' => 'Baby Sleep Set - Blue',
-                'description' => 'Complete sleep set including pajamas, hat, and booties. Made from soft bamboo fabric that regulates temperature and keeps baby comfortable all night long.',
-                'short_description' => 'Comfortable bamboo sleep set in blue',
+                'name' => 'Baby Clothing Set',
+                'description' => 'Comfortable baby clothing set.',
+                'short_description' => 'Baby clothing',
                 'price' => 24.99,
                 'compare_price' => 34.99,
-                'sku' => 'SS-002-BLUE',
-                'brand' => 'Tiny Treasures',
+                'sku' => 'BC-SET-001',
+                'brand' => 'Sisters Station',
                 'weight' => 0.5,
                 'quantity' => 30,
-                'category_slug' => 'sleepwear',
-                'tags' => ['bamboo', 'sleep', 'blue', 'pajamas'],
+                'category_slug' => 'baby-clothing',
+                'tags' => ['clothing'],
             ],
             [
-                'name' => 'Floral Baby Dress',
-                'description' => 'Beautiful floral dress perfect for special occasions. Features delicate lace details and a comfortable fit that allows for easy movement.',
-                'short_description' => 'Elegant floral dress for baby girls',
+                'name' => 'Baby Bath Set',
+                'description' => 'Gentle bath and skin care set for babies.',
+                'short_description' => 'Bath and skin care',
                 'price' => 19.99,
                 'compare_price' => 29.99,
-                'sku' => 'FD-003-FLORAL',
-                'brand' => 'Little Wonders',
+                'sku' => 'BSC-SET-001',
+                'brand' => 'Sisters Station',
                 'weight' => 0.3,
                 'quantity' => 25,
-                'category_slug' => 'dresses-outfits',
-                'tags' => ['dress', 'floral', 'special occasion', 'girl'],
+                'category_slug' => 'bath-and-skin-care',
+                'tags' => ['bath', 'skin care'],
             ],
             [
-                'name' => 'Baby Sun Hat - Yellow',
-                'description' => 'Protective sun hat with wide brim and UPF 50+ protection. Adjustable chin strap ensures a secure fit during outdoor activities.',
-                'short_description' => 'Protective sun hat in yellow',
-                'price' => 8.99,
-                'compare_price' => 12.99,
-                'sku' => 'SH-004-YELLOW',
-                'brand' => 'Baby Bliss',
-                'weight' => 0.1,
-                'quantity' => 75,
-                'category_slug' => 'hats-caps',
-                'tags' => ['sun protection', 'hat', 'yellow', 'outdoor'],
-            ],
-            [
-                'name' => 'Soft Teddy Bear',
-                'description' => 'Cuddly teddy bear made from hypoallergenic materials. Perfect companion for your little one, suitable from birth.',
-                'short_description' => 'Soft and safe teddy bear',
-                'price' => 15.99,
-                'compare_price' => 22.99,
-                'sku' => 'TB-005-BROWN',
-                'brand' => 'Tiny Treasures',
-                'weight' => 0.8,
-                'quantity' => 40,
-                'category_slug' => 'soft-toys',
-                'tags' => ['teddy bear', 'soft toy', 'hypoallergenic', 'safe'],
-            ],
-            [
-                'name' => 'Baby Crib Sheet Set',
-                'description' => 'Set of 2 crib sheets made from premium cotton. Features elastic edges for secure fit and is machine washable for easy care.',
-                'short_description' => 'Soft cotton crib sheet set',
+                'name' => 'Baby Bedding Set',
+                'description' => 'Soft bedding set for baby crib.',
+                'short_description' => 'Bedding',
                 'price' => 22.99,
                 'compare_price' => 32.99,
-                'sku' => 'CS-006-WHITE',
-                'brand' => 'Little Wonders',
-                'weight' => 1.0,
+                'sku' => 'BED-SET-001',
+                'brand' => 'Sisters Station',
+                'weight' => 0.1,
                 'quantity' => 20,
                 'category_slug' => 'bedding',
-                'tags' => ['crib sheet', 'cotton', 'bedding', 'white'],
+                'tags' => ['bedding'],
+            ],
+            [
+                'name' => 'Handmade Baby Gift',
+                'description' => 'Handmade item crafted with love.',
+                'short_description' => 'Crafted with Love',
+                'price' => 15.99,
+                'compare_price' => 22.99,
+                'sku' => 'CWL-001',
+                'brand' => 'Sisters Station',
+                'weight' => 0.8,
+                'quantity' => 40,
+                'category_slug' => 'crafted-with-love',
+                'tags' => ['handmade'],
+            ],
+            [
+                'name' => 'Mommy Care Kit',
+                'description' => 'Essentials for moms.',
+                'short_description' => 'Mommy\'s Corner',
+                'price' => 22.99,
+                'compare_price' => 32.99,
+                'sku' => 'MC-001',
+                'brand' => 'Sisters Station',
+                'weight' => 1.0,
+                'quantity' => 20,
+                'category_slug' => 'mommys-corner',
+                'tags' => ['mom'],
             ],
         ];
 
         foreach ($products as $productData) {
             $seller = $sellers->random();
             $category = $categories->where('slug', $productData['category_slug'])->first();
+
+            if (!$category) {
+                $category = $categories->where('slug', 'baby-clothing')->first();
+            }
 
             $product = Product::create([
                 'seller_id' => $seller->id,

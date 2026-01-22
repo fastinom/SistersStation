@@ -14,6 +14,12 @@
                         </div>
                     @endif
                     
+                    @if (session('info'))
+                        <div class="alert alert-info" role="alert">
+                            {{ session('info') }}
+                        </div>
+                    @endif
+                    
                     <form method="POST" action="{{ route('login.submit') }}">
                         @csrf
                         
@@ -38,13 +44,11 @@
                         </div>
 
                         <!-- Remember Me -->
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="remember" id="remember">
-                                <label class="form-check-label" for="remember">
-                                    Remember Me
-                                </label>
-                            </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                            <label class="form-check-label" for="remember">
+                                Remember Me
+                            </label>
                         </div>
 
                         <!-- Submit Button -->
@@ -55,13 +59,22 @@
                         </div>
                     </form>
 
+                    <!-- Help Section -->
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            If you see "419 Page Expired", 
+                            <a href="javascript:location.reload()" class="text-decoration-none">refresh the page</a> 
+                            and try again.
+                        </small>
+                    </div>
+                    
                     <!-- Forgot Password & Register Links -->
                     <div class="text-center mt-3">
-                        <div class="mb-2">
-                            <a href="#" class="text-decoration-none">Forgot Password?</a>
-                        </div>
-                        <p class="mb-0">Don't have an account? 
-                            <a href="{{ route('register') }}" class="text-decoration-none">Create Account</a>
+                        <p class="mb-0">
+                            Don't have an account? 
+                            <a href="{{ route('register') }}" class="text-decoration-none">
+                                Register here
+                            </a>
                         </p>
                     </div>
                 </div>

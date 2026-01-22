@@ -35,12 +35,12 @@
                         <div class="mb-4">
                             <label class="form-label fw-bold">Categories</label>
                             <div class="category-filters" style="max-height: 200px; overflow-y: auto;">
-                                @foreach($categories as $category)
+                                @foreach($categories as $index => $category)
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" type="radio" name="category" 
-                                               value="{{ $category->slug }}" id="category-{{ $category->id }}"
-                                               {{ request('category') == $category->slug ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="category-{{ $category->id }}">
+                                               value="{{ $category->name }}" id="category-{{ $index }}"
+                                               {{ request('category') == $category->name ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="category-{{ $index }}">
                                             {{ $category->name }}
                                             <small class="text-muted">({{ $category->products_count }})</small>
                                         </label>
@@ -68,16 +68,16 @@
                         </div>
 
                         <!-- Brands -->
-                        @if($brands->count() > 0)
+                        @if(count($brands) > 0)
                             <div class="mb-4">
                                 <label class="form-label fw-bold">Brands</label>
                                 <div class="brand-filters" style="max-height: 150px; overflow-y: auto;">
-                                    @foreach($brands as $brand)
+                                    @foreach($brands as $index => $brand)
                                         <div class="form-check mb-2">
                                             <input class="form-check-input" type="radio" name="brand" 
-                                                   value="{{ $brand }}" id="brand-{{ loop->index }}"
+                                                   value="{{ $brand }}" id="brand-{{ $index }}"
                                                    {{ request('brand') == $brand ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="brand-{{ loop->index }}">
+                                            <label class="form-check-label" for="brand-{{ $index }}">
                                                 {{ $brand }}
                                             </label>
                                         </div>
@@ -158,14 +158,14 @@
                                 <div class="card product-card h-100 border-0 shadow-sm">
                                     <div class="product-image-container position-relative">
                                         <a href="{{ route('products.show', $product->slug) }}">
-                                            <img src="{{ $product->getPrimaryImageUrl() }}" 
+                                            <img src="{{ $product->primary_image_url }}" 
                                                  alt="{{ $product->name }}" 
                                                  class="card-img-top product-image"
                                                  style="height: 250px; object-fit: cover;">
                                         </a>
-                                        @if($product->getDiscountPercentage())
+                                        @if($product->discount_percentage)
                                             <span class="position-absolute top-0 start-0 badge bg-danger m-2">
-                                                -{{ $product->getDiscountPercentage() }}%
+                                                -{{ $product->discount_percentage }}%
                                             </span>
                                         @endif
                                         @if($product->is_featured)
@@ -196,6 +196,9 @@
                                         <div class="mb-2">
                                             <small class="text-muted">{{ $product->seller->store_name }}</small>
                                         </div>
+                                        <p class="card-text small text-muted mb-2">
+                                            {{ Str::limit($product->description, 100) }}
+                                        </p>
                                         <div class="d-flex align-items-center justify-content-between mb-2">
                                             <div>
                                                 @if($product->compare_price && $product->compare_price > $product->price)
@@ -206,8 +209,8 @@
                                                 @endif
                                             </div>
                                             <div class="text-warning small">
-                                                <i class="bi bi-star-fill"></i> {{ number_format($product->getAverageRating(), 1) }}
-                                                <small class="text-muted">({{ $product->getReviewCount() }})</small>
+                                                <i class="bi bi-star-fill"></i> {{ number_format($product->average_rating, 1) }}
+                                                <small class="text-muted">({{ $product->review_count }})</small>
                                             </div>
                                         </div>
                                         <button class="btn btn-primary btn-sm w-100 add-to-cart" 

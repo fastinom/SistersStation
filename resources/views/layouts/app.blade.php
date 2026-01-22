@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- CSS -->
-    @vite(['resources/css/app.css'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     
@@ -46,7 +46,7 @@
                             <i class="bi bi-person-plus me-1"></i> Register
                         </a>
                     @else
-                        <a href="{{ route('customer.dashboard') }}" class="text-white text-decoration-none me-2">
+                        <a href="{{ Auth::user()->isAdmin() ? route('admin.dashboard') : (Auth::user()->isSeller() ? route('seller.dashboard') : route('customer.dashboard')) }}" class="text-white text-decoration-none me-2">
                             <i class="bi bi-person me-1"></i> {{ Auth::user()->name }}
                         </a>
                         <form method="POST" action="{{ route('logout') }}" class="d-inline">
@@ -64,7 +64,7 @@
     <!-- Main Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold text-primary" href="{{ route('home') }}">
+            <a class="navbar-brand fw-bold text-primary" href="{{ Auth::check() && Auth::user()->isAdmin() ? route('admin.dashboard') : route('home') }}">
                 <i class="bi bi-shop me-2"></i>Sisters Station
             </a>
             
@@ -75,36 +75,34 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
+                        <a class="nav-link {{ request()->routeIs('home') || request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ Auth::check() && Auth::user()->isAdmin() ? route('admin.dashboard') : route('home') }}">
                             Home
                         </a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            Categories
-                        </a>
-                        <ul class="dropdown-menu">
-                            @php
-                                $categoriesData = [
-                                    (object)['name' => 'Baby Clothing', 'slug' => 'baby-clothing'],
-                                    (object)['name' => 'Toys & Play', 'slug' => 'toys-play'],
-                                    (object)['name' => 'Nursery', 'slug' => 'nursery'],
-                                    (object)['name' => 'Feeding', 'slug' => 'feeding'],
-                                    (object)['name' => 'Bath Time', 'slug' => 'bath-time'],
-                                ];
-                                $mainCategories = collect($categoriesData)->take(8);
-                            @endphp
-                            @foreach($mainCategories as $category)
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('categories.show', $category->slug) }}">
-                                        {{ $category->name }}
-                                    </a>
-                                </li>
-                            @endforeach
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ route('categories.index') }}">All Categories</a></li>
-                        </ul>
-                    </li>
+                    @if(Auth::check() && Auth::user()->isAdmin())
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.categories*') ? 'active' : '' }}" href="{{ route('admin.categories') }}">
+                                Categories
+                            </a>
+                        </li>
+                    @else
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                Categories
+                            </a>
+                            <ul class="dropdown-menu">
+                                @foreach(($navCategories ?? collect()) as $category)
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('categories.show', $category->slug) }}">
+                                            {{ $category->name }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ route('categories.index') }}">All Categories</a></li>
+                            </ul>
+                        </li>
+                    @endif
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}" href="{{ route('products.index') }}">
                             Products

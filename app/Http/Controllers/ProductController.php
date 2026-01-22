@@ -15,98 +15,95 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::active()
-            ->inStock()
-            ->with(['seller', 'category', 'images', 'reviews']);
+        $query = Product::query()
+            ->active()
+            ->with(['category', 'seller', 'images'])
+            ->withAvg(['reviews as reviews_avg_rating' => function ($q) {
+                $q->where('is_approved', true);
+            }], 'rating')
+            ->withCount(['reviews' => function ($q) {
+                $q->where('is_approved', true);
+            }]);
 
-        // Filter by category
         if ($request->filled('category')) {
-            $category = Category::where('slug', $request->category)->first();
-            if ($category) {
-                $query->where('category_id', $category->id);
-            }
-        }
-
-        // Filter by seller
-        if ($request->filled('seller')) {
-            $query->whereHas('seller', function (Builder $q) use ($request) {
-                $q->where('store_slug', $request->seller);
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->where('name', $request->category);
             });
         }
 
-        // Search products
         if ($request->filled('search')) {
-            $query->search($request->search);
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('short_description', 'like', "%{$search}%")
+                    ->orWhere('brand', 'like', "%{$search}%")
+                    ->orWhere('sku', 'like', "%{$search}%");
+            });
         }
 
-        // Filter by price range
         if ($request->filled('min_price')) {
-            $query->where('price', '>=', $request->min_price);
-        }
-        if ($request->filled('max_price')) {
-            $query->where('price', '<=', $request->max_price);
+            $query->where('price', '>=', (float) $request->min_price);
         }
 
-        // Filter by brand
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', (float) $request->max_price);
+        }
+
         if ($request->filled('brand')) {
             $query->where('brand', $request->brand);
         }
 
-        // Filter by rating
         if ($request->filled('rating')) {
-            $query->whereHas('reviews', function (Builder $q) use ($request) {
-                $q->havingRaw('AVG(rating) >= ?', [$request->rating]);
-            });
+            $query->having('reviews_avg_rating', '>=', (float) $request->rating);
         }
 
-        // Sort products
         $sort = $request->get('sort', 'latest');
         switch ($sort) {
             case 'price_low':
-                $query->orderBy('price', 'asc');
+                $query->orderBy('price');
                 break;
             case 'price_high':
-                $query->orderBy('price', 'desc');
+                $query->orderByDesc('price');
                 break;
             case 'rating':
-                $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'desc');
+                $query->orderByDesc('reviews_avg_rating');
                 break;
             case 'name_asc':
-                $query->orderBy('name', 'asc');
+                $query->orderBy('name');
                 break;
             case 'name_desc':
-                $query->orderBy('name', 'desc');
+                $query->orderByDesc('name');
                 break;
             case 'featured':
-                $query->orderBy('is_featured', 'desc');
+                $query->orderByDesc('is_featured')->orderByDesc('id');
                 break;
             default:
                 $query->latest();
         }
 
-        // Get products with pagination
-        $products = $query->paginate(24);
+        $products = $query->paginate(24)->withQueryString();
 
-        // Get all categories for filter sidebar
-        $categories = Category::active()
-            ->withCount(['products' => function ($query) {
-                $query->active()->inStock();
-            }])
+        $categories = Category::query()
+            ->active()
             ->orderBy('name')
-            ->get();
+            ->withCount(['products' => function ($q) {
+                $q->where('status', 'active');
+            }])
+            ->get(['id', 'name']);
 
-        // Get all brands for filter
-        $brands = Product::active()
+        $brands = Product::query()
+            ->active()
             ->whereNotNull('brand')
+            ->where('brand', '!=', '')
             ->distinct()
+            ->orderBy('brand')
             ->pluck('brand')
-            ->sort()
-            ->values();
+            ->values()
+            ->all();
 
-        // Get price range
-        $priceRange = Product::active()->inStock();
-        $minPrice = $priceRange->min('price');
-        $maxPrice = $priceRange->max('price');
+        $minPrice = (float) (Product::query()->active()->min('price') ?? 0);
+        $maxPrice = (float) (Product::query()->active()->max('price') ?? 0);
 
         return view('products.index', compact(
             'products',

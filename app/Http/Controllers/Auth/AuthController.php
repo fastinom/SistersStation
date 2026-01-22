@@ -50,8 +50,8 @@ class AuthController extends Controller
             'phone' => $request->phone,
         ]);
 
-        // Assign role based on user type
-        $user->assignRole($request->user_type);
+        // Assign role based on user type (temporarily disabled until roles table exists)
+        // $user->assignRole($request->user_type);
 
         // Create seller profile if registering as seller
         if ($request->user_type === 'seller') {
@@ -63,12 +63,18 @@ class AuthController extends Controller
             ]);
         }
 
-        event(new Registered($user));
+        // event(new Registered($user)); // Temporarily disabled to prevent mail error
 
         Auth::login($user);
 
-        return redirect()->route('dashboard')
-            ->with('success', 'Registration successful! Welcome to Sisters Station.');
+        // Redirect based on user type
+        if ($user->user_type === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->user_type === 'seller') {
+            return redirect()->route('seller.dashboard');
+        } else {
+            return redirect()->route('customer.dashboard');
+        }
     }
 
     /**
@@ -89,23 +95,38 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        // Handle 419 Page Expired error
+        if ($request->session()->has('error') && str_contains($request->session()->get('error'), '419')) {
+            $request->session()->forget('error');
+            return redirect()->route('login')->with('info', 'Please try logging in again.');
+        }
+
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
             // Update last login information
             $user = Auth::user();
-            $user->update([
-                'last_login_at' => now(),
-                'last_login_ip' => $request->ip(),
-            ]);
+            
+            // Only update if columns exist
+            try {
+                $user->update([
+                    'last_login_at' => now(),
+                    'last_login_ip' => $request->ip(),
+                ]);
+            } catch (\Illuminate\Database\QueryException $e) {
+                // Columns don't exist, skip login tracking
+                if (strpos($e->getMessage(), 'last_login_at') === false) {
+                    throw $e;
+                }
+            }
 
             // Redirect based on user type
             if ($user->isAdmin()) {
-                return redirect()->intended(route('admin.dashboard'));
+                return redirect()->route('admin.dashboard');
             } elseif ($user->isSeller()) {
-                return redirect()->intended(route('seller.dashboard'));
+                return redirect()->route('seller.dashboard');
             } else {
-                return redirect()->intended(route('customer.dashboard'));
+                return redirect()->route('customer.dashboard');
             }
         }
 

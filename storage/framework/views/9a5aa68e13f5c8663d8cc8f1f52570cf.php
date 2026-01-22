@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- CSS -->
-    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css']); ?>
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     
@@ -46,7 +46,7 @@
                             <i class="bi bi-person-plus me-1"></i> Register
                         </a>
                     <?php else: ?>
-                        <a href="<?php echo e(route('customer.dashboard')); ?>" class="text-white text-decoration-none me-2">
+                        <a href="<?php echo e(Auth::user()->isAdmin() ? route('admin.dashboard') : (Auth::user()->isSeller() ? route('seller.dashboard') : route('customer.dashboard'))); ?>" class="text-white text-decoration-none me-2">
                             <i class="bi bi-person me-1"></i> <?php echo e(Auth::user()->name); ?>
 
                         </a>
@@ -65,7 +65,7 @@
     <!-- Main Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold text-primary" href="<?php echo e(route('home')); ?>">
+            <a class="navbar-brand fw-bold text-primary" href="<?php echo e(Auth::check() && Auth::user()->isAdmin() ? route('admin.dashboard') : route('home')); ?>">
                 <i class="bi bi-shop me-2"></i>Sisters Station
             </a>
             
@@ -76,37 +76,35 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link <?php echo e(request()->routeIs('home') ? 'active' : ''); ?>" href="<?php echo e(route('home')); ?>">
+                        <a class="nav-link <?php echo e(request()->routeIs('home') || request()->routeIs('admin.dashboard') ? 'active' : ''); ?>" href="<?php echo e(Auth::check() && Auth::user()->isAdmin() ? route('admin.dashboard') : route('home')); ?>">
                             Home
                         </a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            Categories
-                        </a>
-                        <ul class="dropdown-menu">
-                            <?php
-                                $categoriesData = [
-                                    (object)['name' => 'Baby Clothing', 'slug' => 'baby-clothing'],
-                                    (object)['name' => 'Toys & Play', 'slug' => 'toys-play'],
-                                    (object)['name' => 'Nursery', 'slug' => 'nursery'],
-                                    (object)['name' => 'Feeding', 'slug' => 'feeding'],
-                                    (object)['name' => 'Bath Time', 'slug' => 'bath-time'],
-                                ];
-                                $mainCategories = collect($categoriesData)->take(8);
-                            ?>
-                            <?php $__currentLoopData = $mainCategories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <li>
-                                    <a class="dropdown-item" href="<?php echo e(route('categories.show', $category->slug)); ?>">
-                                        <?php echo e($category->name); ?>
+                    <?php if(Auth::check() && Auth::user()->isAdmin()): ?>
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo e(request()->routeIs('admin.categories*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.categories')); ?>">
+                                Categories
+                            </a>
+                        </li>
+                    <?php else: ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                Categories
+                            </a>
+                            <ul class="dropdown-menu">
+                                <?php $__currentLoopData = ($navCategories ?? collect()); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <li>
+                                        <a class="dropdown-item" href="<?php echo e(route('categories.show', $category->slug)); ?>">
+                                            <?php echo e($category->name); ?>
 
-                                    </a>
-                                </li>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="<?php echo e(route('categories.index')); ?>">All Categories</a></li>
-                        </ul>
-                    </li>
+                                        </a>
+                                    </li>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="<?php echo e(route('categories.index')); ?>">All Categories</a></li>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
                     <li class="nav-item">
                         <a class="nav-link <?php echo e(request()->routeIs('products.*') ? 'active' : ''); ?>" href="<?php echo e(route('products.index')); ?>">
                             Products

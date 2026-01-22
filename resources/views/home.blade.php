@@ -120,14 +120,14 @@
                     <div class="card product-card h-100 border-0 shadow-sm">
                         <div class="product-image-container position-relative">
                             <a href="{{ route('products.show', $product->slug) }}">
-                                <img src="{{ $product->getPrimaryImageUrl() }}" 
+                                <img src="{{ $product->primary_image_url }}" 
                                      alt="{{ $product->name }}" 
                                      class="card-img-top product-image"
                                      style="height: 250px; object-fit: cover;">
                             </a>
-                            @if($product->getDiscountPercentage())
+                            @if($product->discount_percentage)
                                 <span class="position-absolute top-0 start-0 badge bg-danger m-2">
-                                    -{{ $product->getDiscountPercentage() }}%
+                                    -{{ $product->discount_percentage }}%
                                 </span>
                             @endif
                             @if($product->is_featured)
@@ -158,8 +158,8 @@
                                     @endif
                                 </div>
                                 <div class="text-warning small">
-                                    <i class="bi bi-star-fill"></i> {{ number_format($product->getAverageRating(), 1) }}
-                                    <small class="text-muted">({{ $product->getReviewCount() }})</small>
+                                    <i class="bi bi-star-fill"></i> {{ number_format($product->average_rating, 1) }}
+                                    <small class="text-muted">({{ $product->review_count }})</small>
                                 </div>
                             </div>
                             <div class="d-flex gap-2">
@@ -202,13 +202,13 @@
                     <div class="card product-card h-100 border-0 shadow-sm">
                         <div class="product-image-container position-relative">
                             <a href="{{ route('products.show', $product->slug) }}">
-                                <img src="{{ $product->getPrimaryImageUrl() }}" 
+                                <img src="{{ $product->primary_image_url }}" 
                                      alt="{{ $product->name }}" 
                                      class="card-img-top product-image"
                                      style="height: 250px; object-fit: cover;">
                             </a>
                             <span class="position-absolute top-0 start-0 badge bg-danger m-2">
-                                -{{ $product->getDiscountPercentage() }}%
+                                -{{ $product->discount_percentage }}%
                             </span>
                         </div>
                         <div class="card-body p-3">
@@ -226,7 +226,7 @@
                                     <span class="text-muted text-decoration-line-through small">${{ number_format($product->compare_price, 2) }}</span>
                                 </div>
                                 <div class="text-warning small">
-                                    <i class="bi bi-star-fill"></i> {{ number_format($product->getAverageRating(), 1) }}
+                                    <i class="bi bi-star-fill"></i> {{ number_format($product->average_rating, 1) }}
                                 </div>
                             </div>
                             <button class="btn btn-danger btn-sm w-100 add-to-cart" 

@@ -120,14 +120,14 @@
                     <div class="card product-card h-100 border-0 shadow-sm">
                         <div class="product-image-container position-relative">
                             <a href="<?php echo e(route('products.show', $product->slug)); ?>">
-                                <img src="<?php echo e($product->getPrimaryImageUrl()); ?>" 
+                                <img src="<?php echo e($product->primary_image_url); ?>" 
                                      alt="<?php echo e($product->name); ?>" 
                                      class="card-img-top product-image"
                                      style="height: 250px; object-fit: cover;">
                             </a>
-                            <?php if($product->getDiscountPercentage()): ?>
+                            <?php if($product->discount_percentage): ?>
                                 <span class="position-absolute top-0 start-0 badge bg-danger m-2">
-                                    -<?php echo e($product->getDiscountPercentage()); ?>%
+                                    -<?php echo e($product->discount_percentage); ?>%
                                 </span>
                             <?php endif; ?>
                             <?php if($product->is_featured): ?>
@@ -159,9 +159,9 @@
                                     <?php endif; ?>
                                 </div>
                                 <div class="text-warning small">
-                                    <i class="bi bi-star-fill"></i> <?php echo e(number_format($product->getAverageRating(), 1)); ?>
+                                    <i class="bi bi-star-fill"></i> <?php echo e(number_format($product->average_rating, 1)); ?>
 
-                                    <small class="text-muted">(<?php echo e($product->getReviewCount()); ?>)</small>
+                                    <small class="text-muted">(<?php echo e($product->review_count); ?>)</small>
                                 </div>
                             </div>
                             <div class="d-flex gap-2">
@@ -204,13 +204,13 @@
                     <div class="card product-card h-100 border-0 shadow-sm">
                         <div class="product-image-container position-relative">
                             <a href="<?php echo e(route('products.show', $product->slug)); ?>">
-                                <img src="<?php echo e($product->getPrimaryImageUrl()); ?>" 
+                                <img src="<?php echo e($product->primary_image_url); ?>" 
                                      alt="<?php echo e($product->name); ?>" 
                                      class="card-img-top product-image"
                                      style="height: 250px; object-fit: cover;">
                             </a>
                             <span class="position-absolute top-0 start-0 badge bg-danger m-2">
-                                -<?php echo e($product->getDiscountPercentage()); ?>%
+                                -<?php echo e($product->discount_percentage); ?>%
                             </span>
                         </div>
                         <div class="card-body p-3">
@@ -229,7 +229,7 @@
                                     <span class="text-muted text-decoration-line-through small">$<?php echo e(number_format($product->compare_price, 2)); ?></span>
                                 </div>
                                 <div class="text-warning small">
-                                    <i class="bi bi-star-fill"></i> <?php echo e(number_format($product->getAverageRating(), 1)); ?>
+                                    <i class="bi bi-star-fill"></i> <?php echo e(number_format($product->average_rating, 1)); ?>
 
                                 </div>
                             </div>

@@ -14,140 +14,64 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Temporary hardcoded categories until database migrations work
-        $categoriesData = [
-            (object)[
-                'id' => 1,
-                'name' => 'Baby Clothing',
-                'slug' => 'baby-clothing',
-                'description' => 'Adorable and comfortable clothing for babies',
-                'icon' => 'bi bi-balloon-heart',
-                'sort_order' => 1,
-                'is_featured' => true,
-                'is_active' => true,
-                'parent_id' => null,
-                'products_count' => 0
-            ],
-            (object)[
-                'id' => 2,
-                'name' => 'Onesies & Bodysuits',
-                'slug' => 'onesies-bodysuits',
-                'description' => 'Comfortable onesies and bodysuits for everyday wear',
-                'icon' => 'bi bi-shirt',
-                'sort_order' => 2,
-                'is_featured' => false,
-                'is_active' => true,
-                'parent_id' => 1,
-                'products_count' => 0
-            ],
-            (object)[
-                'id' => 3,
-                'name' => 'Sleepwear',
-                'slug' => 'sleepwear',
-                'description' => 'Cozy sleepwear for peaceful nights',
-                'icon' => 'bi bi-moon-stars',
-                'sort_order' => 3,
-                'is_featured' => false,
-                'is_active' => true,
-                'parent_id' => 1,
-                'products_count' => 0
-            ],
-            (object)[
-                'id' => 4,
-                'name' => 'Dresses & Outfits',
-                'slug' => 'dresses-outfits',
-                'description' => 'Beautiful dresses and complete outfits for special occasions',
-                'icon' => 'bi bi-star',
-                'sort_order' => 4,
-                'is_featured' => false,
-                'is_active' => true,
-                'parent_id' => 1,
-                'products_count' => 0
-            ],
-            (object)[
-                'id' => 5,
-                'name' => 'Shoes & Socks',
-                'slug' => 'shoes-socks',
-                'description' => 'Cute shoes and cozy socks for tiny feet',
-                'icon' => 'bi bi-boot',
-                'sort_order' => 5,
-                'is_featured' => false,
-                'is_active' => true,
-                'parent_id' => 1,
-                'products_count' => 0
-            ],
-            (object)[
-                'id' => 6,
-                'name' => 'Accessories',
-                'slug' => 'accessories',
-                'description' => 'Cute accessories to complete the look',
-                'icon' => 'bi bi-gift',
-                'sort_order' => 6,
-                'is_featured' => false,
-                'is_active' => true,
-                'parent_id' => 1,
-                'products_count' => 0
-            ],
-            (object)[
-                'id' => 7,
-                'name' => 'Toys & Play',
-                'slug' => 'toys-play',
-                'description' => 'Educational and fun toys for development',
-                'icon' => 'bi bi-controller',
-                'sort_order' => 7,
-                'is_featured' => true,
-                'is_active' => true,
-                'parent_id' => null,
-                'products_count' => 0
-            ],
-            (object)[
-                'id' => 8,
-                'name' => 'Nursery',
-                'slug' => 'nursery',
-                'description' => 'Essentials for a comfortable nursery',
-                'icon' => 'bi bi-house-heart',
-                'sort_order' => 8,
-                'is_featured' => true,
-                'is_active' => true,
-                'parent_id' => null,
-                'products_count' => 0
-            ],
-            (object)[
-                'id' => 9,
-                'name' => 'Feeding',
-                'slug' => 'feeding',
-                'description' => 'Everything you need for feeding time',
-                'icon' => 'bi bi-cup-straw',
-                'sort_order' => 9,
-                'is_featured' => false,
-                'is_active' => true,
-                'parent_id' => null,
-                'products_count' => 0
-            ],
-            (object)[
-                'id' => 10,
-                'name' => 'Bath Time',
-                'slug' => 'bath-time',
-                'description' => 'Make bath time fun and safe',
-                'icon' => 'bi bi-droplet',
-                'sort_order' => 10,
-                'is_featured' => false,
-                'is_active' => true,
-                'parent_id' => null,
-                'products_count' => 0
-            ],
-        ];
+        $babyCategories = Category::query()
+            ->active()
+            ->withCount(['products' => function ($query) {
+                $query->where('status', 'active');
+            }])
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
 
-        // Filter root categories (parent_id is null)
-        $babyCategories = collect($categoriesData)->where('parent_id', null);
+        $featuredProducts = Product::query()
+            ->active()
+            ->featured()
+            ->with(['category', 'seller', 'images'])
+            ->withAvg(['reviews as reviews_avg_rating' => function ($query) {
+                $query->where('is_approved', true);
+            }], 'rating')
+            ->withCount(['reviews' => function ($query) {
+                $query->where('is_approved', true);
+            }])
+            ->latest()
+            ->take(8)
+            ->get();
+
+        $latestProducts = Product::query()
+            ->active()
+            ->with(['category', 'seller', 'images'])
+            ->withAvg(['reviews as reviews_avg_rating' => function ($query) {
+                $query->where('is_approved', true);
+            }], 'rating')
+            ->withCount(['reviews' => function ($query) {
+                $query->where('is_approved', true);
+            }])
+            ->latest()
+            ->take(3)
+            ->get();
+
+        $saleProducts = Product::query()
+            ->active()
+            ->whereNotNull('compare_price')
+            ->whereColumn('compare_price', '>', 'price')
+            ->with(['category', 'seller', 'images'])
+            ->withAvg(['reviews as reviews_avg_rating' => function ($query) {
+                $query->where('is_approved', true);
+            }], 'rating')
+            ->withCount(['reviews' => function ($query) {
+                $query->where('is_approved', true);
+            }])
+            ->latest()
+            ->take(8)
+            ->get();
 
         return view('home', [
             'babyCategories' => $babyCategories,
-            'featuredProducts' => collect([]),
-            'latestProducts' => collect([]),
-            'featuredCategories' => collect([]),
-            'topSellers' => collect([]),
-            'saleProducts' => collect([])
+            'featuredProducts' => $featuredProducts,
+            'latestProducts' => $latestProducts,
+            'featuredCategories' => Category::query()->featured()->active()->take(6)->get(),
+            'topSellers' => Seller::query()->where('is_featured', true)->take(6)->get(),
+            'saleProducts' => $saleProducts
         ]);
     }
 

@@ -183,8 +183,11 @@ class Product extends Model
      */
     public function getAverageRating(): float
     {
-        // Temporarily return 0 to avoid database queries during UI testing
-        return 0;
+        if (isset($this->attributes['reviews_avg_rating'])) {
+            return (float) ($this->attributes['reviews_avg_rating'] ?? 0);
+        }
+
+        return (float) ($this->reviews()->where('is_approved', true)->avg('rating') ?? 0);
     }
 
     /**
@@ -192,8 +195,11 @@ class Product extends Model
      */
     public function getReviewCount(): int
     {
-        // Temporarily return 0 to avoid database queries during UI testing
-        return 0;
+        if (isset($this->attributes['reviews_count'])) {
+            return (int) ($this->attributes['reviews_count'] ?? 0);
+        }
+
+        return (int) $this->reviews()->where('is_approved', true)->count();
     }
 
     /**
@@ -201,8 +207,11 @@ class Product extends Model
      */
     public function getTotalSold(): int
     {
-        // Temporarily return 0 to avoid database queries during UI testing
-        return 0;
+        if (isset($this->attributes['order_items_sum_quantity'])) {
+            return (int) ($this->attributes['order_items_sum_quantity'] ?? 0);
+        }
+
+        return (int) ($this->orderItems()->sum('quantity') ?? 0);
     }
 
     /**
@@ -267,7 +276,37 @@ class Product extends Model
      */
     public function getPrimaryImageUrl(): string
     {
-        // Temporarily return placeholder to avoid database queries during UI testing
-        return '/images/placeholder-product.jpg';
+        $images = $this->relationLoaded('images') ? $this->images : null;
+
+        $primary = $images
+            ? $images->where('is_primary', true)->first() ?? $images->first()
+            : $this->images()->where('is_primary', true)->first() ?? $this->images()->first();
+
+        if ($primary) {
+            return $primary->image_url;
+        }
+
+        $productName = urlencode($this->name ?? 'product');
+        return "https://via.placeholder.com/400x400/f0f0f0/666?text={$productName}";
+    }
+
+    public function getPrimaryImageUrlAttribute(): string
+    {
+        return $this->getPrimaryImageUrl();
+    }
+
+    public function getDiscountPercentageAttribute(): ?int
+    {
+        return $this->getDiscountPercentage();
+    }
+
+    public function getAverageRatingAttribute(): float
+    {
+        return $this->getAverageRating();
+    }
+
+    public function getReviewCountAttribute(): int
+    {
+        return $this->getReviewCount();
     }
 }

@@ -25,7 +25,7 @@
                 <!-- Main Image -->
                 <div class="main-image mb-3">
                     <img id="mainProductImage" 
-                         src="{{ $product->images->where('is_primary', true)->first()?->image_path ?? $product->images->first()?->image_path ?? '/images/placeholder-product.jpg' }}" 
+                         src="{{ $product->images->where('is_primary', true)->first()?->image_url ?? $product->images->first()?->image_url ?? '/images/placeholder-product.jpg' }}" 
                          alt="{{ $product->name }}" 
                          class="img-fluid rounded"
                          style="width: 100%; height: 500px; object-fit: cover;">
@@ -35,11 +35,11 @@
                 @if($product->images->count() > 1)
                     <div class="thumbnail-images d-flex gap-2 overflow-auto">
                         @foreach($product->images as $image)
-                            <img src="{{ $image->image_path }}" 
+                            <img src="{{ $image->image_url }}" 
                                  alt="{{ $image->alt_text ?? $product->name }}" 
                                  class="thumbnail img-fluid rounded border"
                                  style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
-                                 onclick="changeMainImage('{{ $image->image_path }}')">
+                                 onclick="changeMainImage('{{ $image->image_url }}')">
                         @endforeach
                     </div>
                 @endif

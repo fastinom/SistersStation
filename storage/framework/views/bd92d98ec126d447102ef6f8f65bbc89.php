@@ -1,8 +1,8 @@
-@extends('layouts.app')
 
-@section('title', 'Admin Dashboard')
 
-@section('content')
+<?php $__env->startSection('title', 'Admin Dashboard'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid py-4">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -16,11 +16,11 @@
                     <i class="bi bi-gear me-1"></i>Quick Actions
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ route('admin.sellers') }}">Review Sellers</a></li>
-                    <li><a class="dropdown-item" href="{{ route('admin.products') }}">Manage Products</a></li>
-                    <li><a class="dropdown-item" href="{{ route('admin.orders') }}">View Orders</a></li>
+                    <li><a class="dropdown-item" href="<?php echo e(route('admin.sellers')); ?>">Review Sellers</a></li>
+                    <li><a class="dropdown-item" href="<?php echo e(route('admin.products')); ?>">Manage Products</a></li>
+                    <li><a class="dropdown-item" href="<?php echo e(route('admin.orders')); ?>">View Orders</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{{ route('admin.settings') }}">Settings</a></li>
+                    <li><a class="dropdown-item" href="<?php echo e(route('admin.settings')); ?>">Settings</a></li>
                 </ul>
             </div>
         </div>
@@ -34,7 +34,7 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
                             <h6 class="text-muted mb-2">Total Users</h6>
-                            <h3 class="mb-0">{{ number_format($stats['total_users']) }}</h3>
+                            <h3 class="mb-0"><?php echo e(number_format($stats['total_users'])); ?></h3>
                             <small class="text-success">
                                 <i class="bi bi-arrow-up"></i> +12 this month
                             </small>
@@ -53,7 +53,7 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
                             <h6 class="text-muted mb-2">Total Sellers</h6>
-                            <h3 class="mb-0">{{ number_format($stats['total_sellers']) }}</h3>
+                            <h3 class="mb-0"><?php echo e(number_format($stats['total_sellers'])); ?></h3>
                             <small class="text-success">
                                 <i class="bi bi-arrow-up"></i> +3 this month
                             </small>
@@ -72,7 +72,7 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
                             <h6 class="text-muted mb-2">Total Products</h6>
-                            <h3 class="mb-0">{{ number_format($stats['total_products']) }}</h3>
+                            <h3 class="mb-0"><?php echo e(number_format($stats['total_products'])); ?></h3>
                             <small class="text-success">
                                 <i class="bi bi-arrow-up"></i> +8 this month
                             </small>
@@ -91,7 +91,7 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
                             <h6 class="text-muted mb-2">Total Orders</h6>
-                            <h3 class="mb-0">{{ number_format($stats['total_orders']) }}</h3>
+                            <h3 class="mb-0"><?php echo e(number_format($stats['total_orders'])); ?></h3>
                             <small class="text-success">
                                 <i class="bi bi-arrow-up"></i> +45 this month
                             </small>
@@ -110,7 +110,7 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
                             <h6 class="text-muted mb-2">Total Revenue</h6>
-                            <h3 class="mb-0">${{ number_format($stats['total_revenue'], 2) }}</h3>
+                            <h3 class="mb-0">$<?php echo e(number_format($stats['total_revenue'], 2)); ?></h3>
                             <small class="text-success">
                                 <i class="bi bi-arrow-up"></i> +15% this month
                             </small>
@@ -129,7 +129,7 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
                             <h6 class="text-muted mb-2">Pending Sellers</h6>
-                            <h3 class="mb-0">{{ number_format($stats['pending_sellers']) }}</h3>
+                            <h3 class="mb-0"><?php echo e(number_format($stats['pending_sellers'])); ?></h3>
                             <small class="text-warning">
                                 <i class="bi bi-clock"></i> Need review
                             </small>
@@ -148,7 +148,7 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
                             <h6 class="text-muted mb-2">Monthly Revenue</h6>
-                            <h3 class="mb-0">${{ number_format($stats['monthly_revenue'], 2) }}</h3>
+                            <h3 class="mb-0">$<?php echo e(number_format($stats['monthly_revenue'], 2)); ?></h3>
                             <small class="text-info">
                                 <i class="bi bi-graph-up"></i> Current month
                             </small>
@@ -185,7 +185,7 @@
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span>Total Orders</span>
-                            <span class="fw-bold">{{ number_format($stats['total_orders']) }}</span>
+                            <span class="fw-bold"><?php echo e(number_format($stats['total_orders'])); ?></span>
                         </div>
                     </div>
                     
@@ -250,10 +250,10 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h6 class="mb-0">Recent Orders</h6>
-                    <a href="{{ route('admin.orders') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                    <a href="<?php echo e(route('admin.orders')); ?>" class="btn btn-sm btn-outline-primary">View All</a>
                 </div>
                 <div class="card-body">
-                    @if(count($recentOrders) > 0)
+                    <?php if(count($recentOrders) > 0): ?>
                         <div class="table-responsive">
                             <table class="table table-sm table-hover">
                                 <thead>
@@ -266,32 +266,34 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($recentOrders as $order)
+                                    <?php $__currentLoopData = $recentOrders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
                                             <td>
-                                                <a href="{{ route('admin.orders.show', $order->id) }}" class="text-decoration-none">
-                                                    #{{ $order->id }}
+                                                <a href="<?php echo e(route('admin.orders.show', $order->id)); ?>" class="text-decoration-none">
+                                                    #<?php echo e($order->id); ?>
+
                                                 </a>
                                             </td>
-                                            <td>{{ $order->user->name }}</td>
-                                            <td>${{ number_format($order->total_amount, 2) }}</td>
+                                            <td><?php echo e($order->user->name); ?></td>
+                                            <td>$<?php echo e(number_format($order->total_amount, 2)); ?></td>
                                             <td>
-                                                <span class="badge bg-{{ $order->status === 'delivered' ? 'success' : ($order->status === 'cancelled' ? 'danger' : 'warning') }}">
-                                                    {{ ucfirst($order->status) }}
+                                                <span class="badge bg-<?php echo e($order->status === 'delivered' ? 'success' : ($order->status === 'cancelled' ? 'danger' : 'warning')); ?>">
+                                                    <?php echo e(ucfirst($order->status)); ?>
+
                                                 </span>
                                             </td>
-                                            <td>{{ $order->created_at->diffForHumans() }}</td>
+                                            <td><?php echo e($order->created_at->diffForHumans()); ?></td>
                                         </tr>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </tbody>
                             </table>
                         </div>
-                    @else
+                    <?php else: ?>
                         <div class="text-center py-4">
                             <i class="bi bi-inbox fs-1 text-muted"></i>
                             <p class="text-muted mt-2">No orders yet</p>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -301,33 +303,34 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h6 class="mb-0">Top Sellers</h6>
-                    <a href="{{ route('admin.sellers') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                    <a href="<?php echo e(route('admin.sellers')); ?>" class="btn btn-sm btn-outline-primary">View All</a>
                 </div>
                 <div class="card-body">
-                    @if(count($topSellers) > 0)
-                        @foreach($topSellers as $index => $seller)
+                    <?php if(count($topSellers) > 0): ?>
+                        <?php $__currentLoopData = $topSellers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $seller): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="d-flex align-items-center mb-3">
                                 <div class="me-3">
                                     <span class="badge bg-primary rounded-circle p-2">
-                                        {{ $index + 1 }}
+                                        <?php echo e($index + 1); ?>
+
                                     </span>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h6 class="mb-1">{{ $seller->store_name }}</h6>
-                                    <small class="text-muted">{{ $seller->user->name }}</small>
+                                    <h6 class="mb-1"><?php echo e($seller->store_name); ?></h6>
+                                    <small class="text-muted"><?php echo e($seller->user->name); ?></small>
                                 </div>
                                 <div class="text-end">
                                     <small class="text-muted">Sales</small>
-                                    <div class="fw-bold">${{ number_format($seller->total_sales, 2) }}</div>
+                                    <div class="fw-bold">$<?php echo e(number_format($seller->total_sales, 2)); ?></div>
                                 </div>
                             </div>
-                        @endforeach
-                    @else
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php else: ?>
                         <div class="text-center py-4">
                             <i class="bi bi-shop fs-1 text-muted"></i>
                             <p class="text-muted mt-2">No sellers yet</p>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -339,10 +342,10 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h6 class="mb-0">Top Products</h6>
-                    <a href="{{ route('admin.products') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                    <a href="<?php echo e(route('admin.products')); ?>" class="btn btn-sm btn-outline-primary">View All</a>
                 </div>
                 <div class="card-body">
-                    @if(count($topProducts) > 0)
+                    <?php if(count($topProducts) > 0): ?>
                         <div class="table-responsive">
                             <table class="table table-sm table-hover">
                                 <thead>
@@ -356,41 +359,42 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($topProducts as $product)
+                                    <?php $__currentLoopData = $topProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <img src="{{ $product->primary_image_url }}" 
-                                                         alt="{{ $product->name }}" 
+                                                    <img src="<?php echo e($product->primary_image_url); ?>" 
+                                                         alt="<?php echo e($product->name); ?>" 
                                                          class="rounded me-2"
                                                          style="width: 30px; height: 30px; object-fit: cover;">
-                                                    {{ Str::limit($product->name, 30) }}
+                                                    <?php echo e(Str::limit($product->name, 30)); ?>
+
                                                 </div>
                                             </td>
-                                            <td>{{ $product->seller->store_name }}</td>
-                                            <td>{{ $product->category->name }}</td>
-                                            <td>${{ number_format($product->price, 2) }}</td>
-                                            <td>{{ $product->order_items_count }}</td>
-                                            <td>${{ number_format($product->order_items_count * $product->price, 2) }}</td>
+                                            <td><?php echo e($product->seller->store_name); ?></td>
+                                            <td><?php echo e($product->category->name); ?></td>
+                                            <td>$<?php echo e(number_format($product->price, 2)); ?></td>
+                                            <td><?php echo e($product->order_items_count); ?></td>
+                                            <td>$<?php echo e(number_format($product->order_items_count * $product->price, 2)); ?></td>
                                         </tr>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </tbody>
                             </table>
                         </div>
-                    @else
+                    <?php else: ?>
                         <div class="text-center py-4">
                             <i class="bi bi-box fs-1 text-muted"></i>
                             <p class="text-muted mt-2">No products yet</p>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -399,10 +403,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const revenueChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: @json(collect($salesChart)->pluck('date')),
+            labels: <?php echo json_encode(collect($salesChart)->pluck('date'), 15, 512) ?>,
             datasets: [{
                 label: 'Revenue',
-                data: @json(collect($salesChart)->pluck('sales')),
+                data: <?php echo json_encode(collect($salesChart)->pluck('sales'), 15, 512) ?>,
                 borderColor: 'rgb(75, 192, 192)',
                 backgroundColor: 'rgba(75, 192, 192, 0.1)',
                 tension: 0.1,
@@ -438,4 +442,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\babywear\resources\views/admin/dashboard.blade.php ENDPATH**/ ?>

@@ -26,15 +26,15 @@
                             <p class="text-muted">{{ $category->description }}</p>
                             <p class="text-muted small">{{ $category->products_count ?? 0 }} Products</p>
                             
-                            @if($category->children->count() > 0)
+                            @if($category->children && $category->children->count() > 0)
                                 <div class="mt-3">
                                     <small class="text-muted d-block mb-2">Subcategories:</small>
                                     <div class="d-flex flex-wrap gap-1 justify-content-center">
-                                        @foreach($category->children->take(3) as $child)
+                                        @foreach(collect($category->children)->take(3) as $child)
                                             <span class="badge bg-light text-dark">{{ $child->name }}</span>
                                         @endforeach
-                                        @if($category->children->count() > 3)
-                                            <span class="badge bg-light text-dark">+{{ $category->children->count() - 3 }} more</span>
+                                        @if(collect($category->children)->count() > 3)
+                                            <span class="badge bg-light text-dark">+{{ collect($category->children)->count() - 3 }} more</span>
                                         @endif
                                     </div>
                                 </div>
