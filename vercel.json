@@ -3,9 +3,7 @@
   "builds": [
     {
       "src": "public/index.php",
-      "use": "@vercel/php",
-      "buildCommand": "chmod +x ./node_modules/.bin/vite && npm run build",
-      "framework": null
+      "use": "@vercel/php"
     }
   ],
   "routes": [
@@ -19,6 +17,6 @@
     "APP_ENV": "production",
     "APP_DEBUG": "false",
     "APP_URL": "https:sisters_station.vercel.app",
-    "APP_KEY": "base64:YOUR_LARAVEL_APP_KEY_HERE"
+    "APP_KEY": "base64:Gv4EEkfNKVxiZVoe4pZWxS/8zcL5B17gcokHvqED3lM="
   }
 }
