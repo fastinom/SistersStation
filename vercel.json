@@ -3,7 +3,9 @@
   "builds": [
     {
       "src": "public/index.php",
-      "use": "@vercel/php"
+      "use": "@vercel/php",
+      "buildCommand": "chmod +x ./node_modules/.bin/vite && npm run build",
+      "framework": null
     }
   ],
   "routes": [
