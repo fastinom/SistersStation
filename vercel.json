@@ -1,11 +1,15 @@
 {
   "version": 2,
-  "buildCommand": "npm ci && npm run build",
-  "outputDirectory": "public",
+  "builds": [
+    {
+      "src": "public/index.php",
+      "use": "vercel-php@0.6.0"
+    }
+  ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/index.php"
+      "dest": "/public/index.php"
     }
   ],
   "env": {
