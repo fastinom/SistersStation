@@ -8,10 +8,10 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql zip bcmath
 
-COPY . .
-
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer install --no-dev --optimize-autoloader
+COPY composer.json composer-lock.json ./
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+COPY . .
 RUN npm install && npm run build
 
 RUN chown -R www-data:www-data /var/www/html \
