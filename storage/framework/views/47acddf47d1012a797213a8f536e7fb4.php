@@ -26,15 +26,15 @@
                             <p class="text-muted"><?php echo e($category->description); ?></p>
                             <p class="text-muted small"><?php echo e($category->products_count ?? 0); ?> Products</p>
                             
-                            <?php if($category->children->count() > 0): ?>
+                            <?php if($category->children && $category->children->count() > 0): ?>
                                 <div class="mt-3">
                                     <small class="text-muted d-block mb-2">Subcategories:</small>
                                     <div class="d-flex flex-wrap gap-1 justify-content-center">
-                                        <?php $__currentLoopData = $category->children->take(3); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $child): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php $__currentLoopData = collect($category->children)->take(3); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $child): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <span class="badge bg-light text-dark"><?php echo e($child->name); ?></span>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                        <?php if($category->children->count() > 3): ?>
-                                            <span class="badge bg-light text-dark">+<?php echo e($category->children->count() - 3); ?> more</span>
+                                        <?php if(collect($category->children)->count() > 3): ?>
+                                            <span class="badge bg-light text-dark">+<?php echo e(collect($category->children)->count() - 3); ?> more</span>
                                         <?php endif; ?>
                                     </div>
                                 </div>
