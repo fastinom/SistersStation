@@ -18,7 +18,7 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --prefer-dist --no-interaction --no-scripts --optimize-autoloader
 
-FROM php:8.2-apache
+FROM php:8.4-apache
 
 WORKDIR /var/www/html
 
